@@ -8,7 +8,8 @@ class Settings(BaseModel):
     idempotency_backend: str = "inmemory"  # inmemory|redis
     redis_url: str = "redis://localhost:6379/0"
 
-    queue_backend: str = "inmemory"  # future: rabbitmq|sqs|kafka
+    queue_backend: str = "inmemory"  # inmemory|sqlite|rabbitmq|sqs|kafka
+    queue_sqlite_path: str = ".runtime/queue.db"
 
     event_store_backend: str = "inmemory"  # inmemory|sqlite
     event_store_sqlite_path: str = ".runtime/events.db"

@@ -34,3 +34,9 @@
 - Added pluggable backend wiring in `dependencies.py` (idempotency + event store + queue).
 - Added SQLite event store adapter for persistent local audit trail.
 - Added idempotency backend factory (`inmemory|redis`).
+
+
+## Batch 3 (completed)
+- Added persistent SQLite queue adapter and queue factory (`inmemory|sqlite`).
+- Wired queue backend selection via `Settings` + `dependencies.py`.
+- Added queue adapter/factory tests.

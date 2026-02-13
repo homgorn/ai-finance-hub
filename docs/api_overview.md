@@ -15,3 +15,5 @@ Runtime behavior now includes:
 - in-memory queue worker entrypoint,
 - tenant quota and budget-cap rejection path,
 - metrics snapshot in health endpoint.
+
+- Queue backend can now be configured as `inmemory|sqlite` (broker adapters next).
