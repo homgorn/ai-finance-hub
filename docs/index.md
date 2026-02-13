@@ -19,3 +19,4 @@ Welcome to the platform docs.
 - [Skills Ecosystem](SKILLS_ECOSYSTEM.md)
 - [Highload Readiness (RU)](HIGHLOAD_READINESS_RU.md)
 - [Implementation Status (RU)](IMPLEMENTATION_STATUS_RU.md)
+- [Reliability Review (RU)](RELIABILITY_REVIEW_RU.md)

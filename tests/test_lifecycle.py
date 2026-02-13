@@ -10,6 +10,10 @@ class LifecycleTests(unittest.TestCase):
         self.assertTrue(can_transition(TaskStatus.queued, TaskStatus.processing))
         self.assertTrue(can_transition(TaskStatus.processing, TaskStatus.completed))
 
+    def test_retry_transitions(self):
+        self.assertTrue(can_transition(TaskStatus.processing, TaskStatus.queued))
+        self.assertTrue(can_transition(TaskStatus.failed, TaskStatus.queued))
+
     def test_invalid_transition(self):
         self.assertFalse(can_transition(TaskStatus.submitted, TaskStatus.completed))
 

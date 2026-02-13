@@ -31,3 +31,8 @@
 - Our uniqueness is governance + explainability + modular skills, not raw model quality.
 - We still need validated market evidence from public sources before strong pricing/TAM claims.
 
+
+## Reliability self-critique (latest)
+- Runtime lacked retry semantics and failure context in task records.
+- Lifecycle transitions were too strict for safe requeue on transient failures.
+- We still need broker-grade queue semantics for multi-worker production.

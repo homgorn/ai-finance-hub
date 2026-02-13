@@ -17,9 +17,9 @@ ALLOWED_TRANSITIONS: dict[TaskStatus, set[TaskStatus]] = {
     TaskStatus.submitted: {TaskStatus.routed, TaskStatus.rejected},
     TaskStatus.routed: {TaskStatus.queued, TaskStatus.rejected},
     TaskStatus.queued: {TaskStatus.processing, TaskStatus.failed},
-    TaskStatus.processing: {TaskStatus.completed, TaskStatus.failed},
+    TaskStatus.processing: {TaskStatus.completed, TaskStatus.failed, TaskStatus.queued},
     TaskStatus.completed: set(),
-    TaskStatus.failed: set(),
+    TaskStatus.failed: {TaskStatus.queued},
     TaskStatus.rejected: set(),
 }
 
