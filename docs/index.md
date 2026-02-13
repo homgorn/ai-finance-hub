@@ -33,3 +33,4 @@
 - [Architecture Enhancements](ARCHITECTURE_ENHANCEMENTS.md)
 - [Source Access Log](SOURCE_LOG.md)
 - [Skills Ecosystem](SKILLS_ECOSYSTEM.md)
+- [Logic Weak Points (RU)](LOGIC_WEAK_POINTS_RU.md)

@@ -36,3 +36,10 @@
 - Runtime lacked retry semantics and failure context in task records.
 - Lifecycle transitions were too strict for safe requeue on transient failures.
 - We still need broker-grade queue semantics for multi-worker production.
+
+## Additional system-logic weak points
+
+- No broker-grade queue semantics in production mode yet.
+- No outbox/inbox consistency model yet for exactly-once business effect.
+- Observability remains basic without end-to-end tracing spans.
+
