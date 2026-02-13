@@ -17,3 +17,4 @@ Welcome to the platform docs.
 - [Architecture Enhancements](ARCHITECTURE_ENHANCEMENTS.md)
 - [Source Access Log](SOURCE_LOG.md)
 - [Skills Ecosystem](SKILLS_ECOSYSTEM.md)
+- [Highload Readiness (RU)](HIGHLOAD_READINESS_RU.md)

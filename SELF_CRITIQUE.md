@@ -7,12 +7,14 @@
 - Docs were too generic and did not clearly explain service runtime flow.
 
 ## What is improved now
+- Added a first-step orchestrator abstraction with deterministic idempotency key generation.
 - Added explainable routing decisions (`reason`, `required_skills`).
 - Added stricter OpenClaw policy dimensions (network, tool budget, human approval).
 - Added backend test suite for route and policy logic.
 - Clarified the platform runtime concept in `README.md`.
 
 ## Remaining gaps (honest)
+- We lacked explicit highload readiness checklist (idempotency, queueing, backpressure).
 - No persistent state (DB/queue) yet.
 - No real provider integrations (Anthropic/OpenAI/financial APIs) yet.
 - No true policy engine with signed approvals.

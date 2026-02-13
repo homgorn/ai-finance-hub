@@ -38,3 +38,4 @@ AI Finance Hub is an orchestration platform, not a single chatbot:
 - `docs/SOURCE_LOG.md`
 
 - `docs/SKILLS_ECOSYSTEM.md`
+- `docs/HIGHLOAD_READINESS_RU.md`
