@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from queue import Empty, Queue
+from typing import Protocol
 
 
 @dataclass
@@ -9,6 +10,14 @@ class TaskMessage:
     task_id: str
     tenant_id: str
     idempotency_key: str
+
+
+class TaskQueue(Protocol):
+    def publish(self, msg: TaskMessage) -> None: ...
+
+    def consume_nowait(self) -> TaskMessage | None: ...
+
+    def lag(self) -> int: ...
 
 
 class InMemoryTaskQueue:

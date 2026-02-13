@@ -43,3 +43,9 @@ class RedisIdempotencyStore:
             client.setex(full_key, ttl_seconds, "1")
             return
         client.set(full_key, "1")
+
+
+def build_idempotency_store(backend: str, redis_url: str) -> IdempotencyStore:
+    if backend == "redis":
+        return RedisIdempotencyStore(redis_url=redis_url)
+    return InMemoryIdempotencyStore()

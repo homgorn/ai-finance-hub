@@ -28,3 +28,9 @@
 - Подменить in-memory idempotency на Redis в runtime wiring.
 - Добавить persistent event store (PostgreSQL) + retention.
 - Добавить integration tests (FastAPI TestClient) и нагрузочные тесты (k6/Locust).
+
+
+## Batch 2 (completed)
+- Added pluggable backend wiring in `dependencies.py` (idempotency + event store + queue).
+- Added SQLite event store adapter for persistent local audit trail.
+- Added idempotency backend factory (`inmemory|redis`).

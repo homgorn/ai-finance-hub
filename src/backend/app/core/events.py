@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
+import sqlite3
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any
+from pathlib import Path
+from typing import Any, Protocol
 
 
 @dataclass
@@ -12,6 +15,14 @@ class Event:
     type: str
     data: dict[str, Any]
     created_at: str
+
+
+class EventStore(Protocol):
+    def append(self, task_id: str, tenant_id: str, event_type: str, data: dict[str, Any]) -> None: ...
+
+    def list_by_task(self, task_id: str) -> list[Event]: ...
+
+    def count(self) -> int: ...
 
 
 class InMemoryEventStore:
@@ -34,3 +45,59 @@ class InMemoryEventStore:
 
     def count(self) -> int:
         return len(self._events)
+
+
+class SQLiteEventStore:
+    def __init__(self, db_path: str = ".runtime/events.db") -> None:
+        self.db_path = db_path
+        Path(db_path).parent.mkdir(parents=True, exist_ok=True)
+        self._ensure_schema()
+
+    def _conn(self) -> sqlite3.Connection:
+        return sqlite3.connect(self.db_path)
+
+    def _ensure_schema(self) -> None:
+        with self._conn() as conn:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS events (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    task_id TEXT NOT NULL,
+                    tenant_id TEXT NOT NULL,
+                    type TEXT NOT NULL,
+                    data_json TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                )
+                """
+            )
+            conn.commit()
+
+    def append(self, task_id: str, tenant_id: str, event_type: str, data: dict[str, Any]) -> None:
+        with self._conn() as conn:
+            conn.execute(
+                "INSERT INTO events(task_id, tenant_id, type, data_json, created_at) VALUES (?, ?, ?, ?, ?)",
+                (
+                    task_id,
+                    tenant_id,
+                    event_type,
+                    json.dumps(data, ensure_ascii=False),
+                    datetime.now(timezone.utc).isoformat(),
+                ),
+            )
+            conn.commit()
+
+    def list_by_task(self, task_id: str) -> list[Event]:
+        with self._conn() as conn:
+            rows = conn.execute(
+                "SELECT task_id, tenant_id, type, data_json, created_at FROM events WHERE task_id = ? ORDER BY id",
+                (task_id,),
+            ).fetchall()
+        return [
+            Event(task_id=r[0], tenant_id=r[1], type=r[2], data=json.loads(r[3]), created_at=r[4])
+            for r in rows
+        ]
+
+    def count(self) -> int:
+        with self._conn() as conn:
+            row = conn.execute("SELECT COUNT(*) FROM events").fetchone()
+        return int(row[0]) if row else 0

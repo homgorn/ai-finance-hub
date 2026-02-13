@@ -4,13 +4,13 @@ from dataclasses import asdict, dataclass
 from typing import Any
 from uuid import uuid4
 
-from ..core.events import InMemoryEventStore
-from ..core.idempotency import InMemoryIdempotencyStore
+from ..core.events import EventStore, InMemoryEventStore
+from ..core.idempotency import IdempotencyStore, InMemoryIdempotencyStore
 from ..core.lifecycle import TaskStatus, can_transition
 from ..core.metrics import MetricsCollector
 from ..core.orchestrator import TaskOrchestrator
 from ..core.policy import RiskLevel
-from ..core.queueing import InMemoryTaskQueue, TaskMessage
+from ..core.queueing import InMemoryTaskQueue, TaskMessage, TaskQueue
 from ..core.quotas import QuotaManager
 from ..core.routing import TaskContext
 
@@ -37,12 +37,19 @@ class SubmitResult:
 
 
 class RuntimeService:
-    def __init__(self) -> None:
-        self.events = InMemoryEventStore()
-        self.queue = InMemoryTaskQueue()
+    def __init__(
+        self,
+        *,
+        event_store: EventStore | None = None,
+        task_queue: TaskQueue | None = None,
+        idempotency_store: IdempotencyStore | None = None,
+        quota_manager: QuotaManager | None = None,
+    ) -> None:
+        self.events = event_store or InMemoryEventStore()
+        self.queue = task_queue or InMemoryTaskQueue()
         self.metrics = MetricsCollector()
-        self.quotas = QuotaManager()
-        self.orchestrator = TaskOrchestrator(InMemoryIdempotencyStore())
+        self.quotas = quota_manager or QuotaManager()
+        self.orchestrator = TaskOrchestrator(idempotency_store or InMemoryIdempotencyStore())
         self.tasks: dict[str, TaskRecord] = {}
 
     def submit_task(self, task: Any) -> SubmitResult:
