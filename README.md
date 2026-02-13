@@ -1,0 +1,38 @@
+# AI Finance Hub
+
+Security-first platform architecture for financial AI automation with modular agent skills (Claude/OpenAI), OpenClaw control layer, and scalable orchestration.
+
+## What this service is (core idea)
+AI Finance Hub is an orchestration platform, not a single chatbot:
+1. receives a finance task,
+2. classifies domain/risk,
+3. routes to a specialist agent,
+4. applies OpenClaw policy guardrails,
+5. returns traceable output with required skills.
+
+## Implemented in this iteration
+- Typed task model (`priority`, `domain_hint`, PII/browser flags).
+- Domain inference + explicit routing decision payload (`agent`, `reason`, `required_skills`).
+- Stronger OpenClaw policy model with `max_tool_calls`, network toggle, human-approval gate.
+- Basic backend tests for routing and policy behavior.
+
+## Key folders
+- `src/backend` — FastAPI backend with orchestration and policy stubs.
+- `src/frontend` — React + TypeScript skeleton.
+- `modules/skills` — Claude/OpenAI/community skill modules.
+- `openclaw` — architecture, threat model, hardening docs.
+- `docs` — GitHub Pages-ready documentation.
+
+## Next steps
+1. Replace keyword routing with scored classifier + agent capability registry.
+2. Add persistent audit logs and signed execution traces.
+3. Add policy simulation endpoint for preflight task safety checks.
+4. Integrate observability (Sentry/PostHog/OpenTelemetry).
+
+## Strategic docs added
+- `docs/PRODUCT_POSITIONING_RU.md`
+- `docs/SWOT_COMPETITORS_RU.md`
+- `docs/NEGATIVE_FEEDBACK_MAP_RU.md`
+- `docs/RESEARCH_BACKLOG_RU.md`
+- `docs/ARCHITECTURE_ENHANCEMENTS.md`
+- `docs/SOURCE_LOG.md`

@@ -1,0 +1,7 @@
+agents:
+  - id: triage
+    model_family: openai
+    can_use_tools: false
+  - id: tax_specialist
+    model_family: claude
+    can_use_tools: true

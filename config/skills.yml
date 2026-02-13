@@ -1,0 +1,4 @@
+skills:
+  - modules/skills/claude/FINANCIAL_ADVISOR_TAX
+  - modules/skills/claude/SECURE_CODE_REVIEW
+  - modules/skills/openai/SWARM_ORCHESTRATION

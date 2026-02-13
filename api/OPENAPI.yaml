@@ -1,0 +1,23 @@
+openapi: 3.0.3
+info:
+  title: AI Finance Hub API
+  version: 0.2.0
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /tasks/route:
+    post:
+      summary: Route task to an agent
+      responses:
+        '200':
+          description: Routing decision
+  /security/policy:
+    get:
+      summary: Evaluate OpenClaw policy envelope
+      responses:
+        '200':
+          description: Policy payload
