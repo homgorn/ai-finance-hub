@@ -1,0 +1,41 @@
+openapi: 3.0.3
+info:
+  title: AI Finance Hub API
+  version: 0.3.0
+paths:
+  /health:
+    get:
+      summary: Health and runtime metrics snapshot
+      responses:
+        '200':
+          description: OK
+  /tasks/route:
+    post:
+      summary: Route task to an agent
+      responses:
+        '200':
+          description: Routing decision
+  /tasks/submit:
+    post:
+      summary: Submit task to orchestrator and queue
+      responses:
+        '200':
+          description: Submission result
+  /tasks/{task_id}/process:
+    post:
+      summary: Process next queued task (worker simulation)
+      responses:
+        '200':
+          description: Processed
+  /tasks/{task_id}:
+    get:
+      summary: Get task record
+      responses:
+        '200':
+          description: Task
+  /security/policy:
+    get:
+      summary: Evaluate OpenClaw policy envelope
+      responses:
+        '200':
+          description: Policy payload
