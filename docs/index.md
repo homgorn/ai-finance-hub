@@ -18,3 +18,4 @@ Welcome to the platform docs.
 - [Source Access Log](SOURCE_LOG.md)
 - [Skills Ecosystem](SKILLS_ECOSYSTEM.md)
 - [Highload Readiness (RU)](HIGHLOAD_READINESS_RU.md)
+- [Implementation Status (RU)](IMPLEMENTATION_STATUS_RU.md)

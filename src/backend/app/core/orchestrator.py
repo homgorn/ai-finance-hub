@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from hashlib import sha256
 
+from .idempotency import IdempotencyStore
 from .policy import OpenClawPolicy, RiskLevel, evaluate_tool_access
 from .routing import RoutingDecision, TaskContext, TaskDomain, infer_domain, route_task
 
@@ -15,25 +16,8 @@ class OrchestratedTask:
     domain: TaskDomain
 
 
-class InMemoryIdempotencyStore:
-    """Simple deterministic idempotency store.
-
-    Keep this as a local adapter for now; later swap with Redis/DynamoDB
-    without changing orchestration code.
-    """
-
-    def __init__(self) -> None:
-        self._seen: set[str] = set()
-
-    def exists(self, key: str) -> bool:
-        return key in self._seen
-
-    def put(self, key: str) -> None:
-        self._seen.add(key)
-
-
 class TaskOrchestrator:
-    def __init__(self, idempotency_store: InMemoryIdempotencyStore) -> None:
+    def __init__(self, idempotency_store: IdempotencyStore) -> None:
         self.idempotency_store = idempotency_store
 
     @staticmethod
@@ -48,10 +32,11 @@ class TaskOrchestrator:
         tenant_id: str = "default",
         risk_level: RiskLevel = RiskLevel.medium,
         contains_pii: bool = False,
+        idem_ttl_seconds: int | None = 3600,
     ) -> OrchestratedTask:
         key = self.build_idempotency_key(task, tenant_id)
         if not self.idempotency_store.exists(key):
-            self.idempotency_store.put(key)
+            self.idempotency_store.put(key, ttl_seconds=idem_ttl_seconds)
 
         domain = infer_domain(task)
         decision = route_task(task)

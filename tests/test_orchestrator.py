@@ -1,6 +1,7 @@
 import unittest
 
-from src.backend.app.core.orchestrator import InMemoryIdempotencyStore, TaskOrchestrator
+from src.backend.app.core.idempotency import InMemoryIdempotencyStore
+from src.backend.app.core.orchestrator import TaskOrchestrator
 from src.backend.app.core.policy import RiskLevel
 from src.backend.app.core.routing import TaskContext, TaskDomain
 
