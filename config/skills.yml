@@ -1,4 +1,14 @@
 skills:
   - modules/skills/claude/FINANCIAL_ADVISOR_TAX
   - modules/skills/claude/SECURE_CODE_REVIEW
+  - modules/skills/claude/PROMPT_SECURITY_AUDIT
+  - modules/skills/claude/RISK_COMPLIANCE_KYC_AML
+  - modules/skills/claude/PORTFOLIO_REBALANCE
+  - modules/skills/claude/CLIENT_ONBOARDING_PACK
+  - modules/skills/claude/FINANCIAL_REPORT_QA
   - modules/skills/openai/SWARM_ORCHESTRATION
+  - modules/skills/openai/FUNCTION_CALLING_TOOL_ROUTER
+  - modules/skills/openai/RETRIEVAL_GROUNDED_ANALYST
+  - modules/skills/openai/EVALS_REGRESSION_GUARD
+  - modules/skills/openai/REASONING_MODEL_ORCHESTRATOR
+  - modules/skills/ecosystem/SKILL_REGISTRY_SYNC

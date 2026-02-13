@@ -1,0 +1,31 @@
+name: Skills Catalog Sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */12 * * *'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Sync catalog
+        run: python scripts/sync_skills_catalog.py
+      - name: Create PR for catalog update
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: sync external skills catalog"
+          title: "chore: sync external skills catalog"
+          body: |
+            Automated sync of external skill-like assets via GitHub API.
+            - Source config: `config/skill_sources/sources.yaml`
+            - Generated lock: `data/skills/catalog.lock.json`
+          branch: bot/skills-catalog-sync
+          delete-branch: true

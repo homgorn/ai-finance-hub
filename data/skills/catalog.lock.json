@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-02-13T05:38:00.540995+00:00",
+  "sources_total": 4,
+  "entries_total": 0,
+  "failures": [
+    "anthropics/anthropic-cookbook: <urlopen error Tunnel connection failed: 403 Forbidden>",
+    "openai/openai-cookbook: <urlopen error Tunnel connection failed: 403 Forbidden>",
+    "openai/swarm: <urlopen error Tunnel connection failed: 403 Forbidden>",
+    "langchain-ai/langchain: <urlopen error Tunnel connection failed: 403 Forbidden>"
+  ],
+  "entries": []
+}

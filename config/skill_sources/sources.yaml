@@ -1,0 +1,29 @@
+providers:
+  - name: anthropic
+    repos:
+      - owner: anthropics
+        repo: anthropic-cookbook
+        branch: main
+        skill_path_hints:
+          - skills
+          - examples/agents
+  - name: openai
+    repos:
+      - owner: openai
+        repo: openai-cookbook
+        branch: main
+        skill_path_hints:
+          - examples
+          - skills
+      - owner: openai
+        repo: swarm
+        branch: main
+        skill_path_hints:
+          - examples
+  - name: community
+    repos:
+      - owner: langchain-ai
+        repo: langchain
+        branch: master
+        skill_path_hints:
+          - docs

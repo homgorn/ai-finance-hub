@@ -16,3 +16,4 @@ Welcome to the platform docs.
 - [Research Backlog (RU)](RESEARCH_BACKLOG_RU.md)
 - [Architecture Enhancements](ARCHITECTURE_ENHANCEMENTS.md)
 - [Source Access Log](SOURCE_LOG.md)
+- [Skills Ecosystem](SKILLS_ECOSYSTEM.md)
