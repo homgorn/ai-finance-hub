@@ -34,3 +34,4 @@
 - [Source Access Log](SOURCE_LOG.md)
 - [Skills Ecosystem](SKILLS_ECOSYSTEM.md)
 - [Logic Weak Points (RU)](LOGIC_WEAK_POINTS_RU.md)
+- [Full Docusaurus Documentation Plan (RU)](DOCUSAURUS_FULL_DOCUMENTATION_RU.md)

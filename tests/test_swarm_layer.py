@@ -1,6 +1,6 @@
 import unittest
 
-from src.backend.app.core.routing import TaskContext, TaskDomain, infer_domain, route_task
+from src.backend.app.core.routing import KeywordMatcher, TaskContext, TaskDomain, infer_domain, route_task
 
 
 class SwarmLayerTests(unittest.TestCase):
@@ -18,6 +18,60 @@ class SwarmLayerTests(unittest.TestCase):
         task = TaskContext(title="Planning", description="Help with goals")
         decision = route_task(task)
         self.assertEqual(decision.agent_id, "general_finance_agent")
+
+    def test_keyword_matching_uses_tokens_not_substrings(self):
+        task = TaskContext(title="Editor syntax help", description="Need better syntax highlighting")
+        decision = route_task(task)
+        self.assertEqual(decision.agent_id, "general_finance_agent")
+
+    def test_prefix_keywords_match_declined_word_forms(self):
+        task = TaskContext(title="Проверка санкций", description="Нужны шаги AML")
+        decision = route_task(task)
+        self.assertEqual(decision.agent_id, "compliance_guard")
+
+    def test_suffix_word_forms_match_tax_keywords(self):
+        task = TaskContext(title="Filing", description="Need help with deductions and налоги")
+        decision = route_task(task)
+        self.assertEqual(decision.agent_id, "tax_specialist")
+
+    def test_plural_insurance_terms_route_correctly(self):
+        task = TaskContext(title="Policies review", description="Compare premiums and coverage")
+        decision = route_task(task)
+        self.assertEqual(decision.agent_id, "insurance_specialist")
+
+    def test_tokenization_handles_punctuation_boundaries(self):
+        task = TaskContext(title="Tax-help", description="Need: IRS, deductions.")
+        decision = route_task(task)
+        self.assertEqual(decision.agent_id, "tax_specialist")
+
+    def test_portfolio_keywords_route_to_portfolio_specialist(self):
+        task = TaskContext(title="Portfolio rebalance", description="Need allocation check")
+        decision = route_task(task)
+        self.assertEqual(decision.agent_id, "portfolio_specialist")
+        self.assertIn("PORTFOLIO_REBALANCING", decision.required_skills)
+
+    def test_domain_hint_routes_portfolio(self):
+        task = TaskContext(title="Anything", description="General", domain_hint=TaskDomain.portfolio)
+        decision = route_task(task)
+        self.assertEqual(decision.agent_id, "portfolio_specialist")
+
+    def test_route_decision_is_not_shared_mutable_instance(self):
+        task = TaskContext(title="Tax deductions", description="Need IRS filing checklist")
+        decision = route_task(task)
+        decision.required_skills.append("MUTATION")
+
+        decision_again = route_task(task)
+        self.assertNotIn("MUTATION", decision_again.required_skills)
+
+    def test_keyword_matcher_normalizes_and_deduplicates_prefixes(self):
+        matcher = KeywordMatcher.from_keywords({" Tax ", "DEDuction*", "deduction*", "*", ""})
+        self.assertIn("tax", matcher.exact_tokens)
+        self.assertEqual(matcher.prefix_tokens, ("deduction",))
+
+    def test_rule_priority_prefers_first_matching_domain(self):
+        task = TaskContext(title="Tax and insurance", description="Need policy and IRS guidance")
+        decision = route_task(task)
+        self.assertEqual(decision.agent_id, "tax_specialist")
 
 
 if __name__ == "__main__":
