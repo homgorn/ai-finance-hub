@@ -60,5 +60,6 @@ When adding a new domain:
 - Routing configuration is validated at module load: every non-`general` `TaskDomain` must have a template in `ROUTING_BY_DOMAIN`.
 - Validation is strict: unexpected extra route entries also fail fast.
 - Every non-`general` domain must also have at least one entry in `KEYWORD_RULES`.
+- Exact keywords are validated for cross-domain collisions (same exact token cannot belong to multiple domains).
 - This fail-fast guard prevents silent regressions when adding or refactoring domains.
 - Tests assert map/domain and keyword/domain consistency to keep these invariants locked in CI.

@@ -119,6 +119,17 @@ def _validate_routing_configuration() -> None:
         missing = ", ".join(sorted(domain.value for domain in missing_keyword_domains))
         raise ValueError(f"Missing keyword rules for domains: {missing}")
 
+    exact_keyword_owners: dict[str, TaskDomain] = {}
+    for keywords, domain in KEYWORD_RULES:
+        matcher = KeywordMatcher.from_keywords(keywords)
+        for keyword in matcher.exact_tokens:
+            owner = exact_keyword_owners.get(keyword)
+            if owner is not None and owner is not domain:
+                raise ValueError(
+                    f"Exact keyword '{keyword}' is assigned to multiple domains: {owner.value}, {domain.value}"
+                )
+            exact_keyword_owners[keyword] = domain
+
 
 _validate_routing_configuration()
 

@@ -72,6 +72,16 @@ class SwarmLayerTests(unittest.TestCase):
         decision_again = route_task(task)
         self.assertNotIn("MUTATION", decision_again.required_skills)
 
+
+    def test_keyword_matching_is_case_insensitive_for_latin_and_cyrillic(self):
+        tax_task = TaskContext(title="НАЛОГИ", description="Need IRS help")
+        tax_decision = route_task(tax_task)
+        self.assertEqual(tax_decision.agent_id, "tax_specialist")
+
+        compliance_task = TaskContext(title="AML CHECK", description="Проверка САНКЦИЙ")
+        compliance_decision = route_task(compliance_task)
+        self.assertEqual(compliance_decision.agent_id, "compliance_guard")
+
     def test_keyword_matcher_normalizes_and_deduplicates_prefixes(self):
         matcher = KeywordMatcher.from_keywords({" Tax ", "DEDuction*", "deduction*", "*", ""})
         self.assertIn("tax", matcher.exact_tokens)
