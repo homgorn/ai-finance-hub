@@ -101,13 +101,27 @@ GENERAL_ROUTING_DECISION = RoutingDecision(
 
 def _validate_routing_configuration() -> None:
     expected_domains = {domain for domain in TaskDomain if domain is not TaskDomain.general}
-    missing_domains = expected_domains - set(ROUTING_BY_DOMAIN)
+    configured_domains = set(ROUTING_BY_DOMAIN)
+
+    missing_domains = expected_domains - configured_domains
     if missing_domains:
         missing = ", ".join(sorted(domain.value for domain in missing_domains))
         raise ValueError(f"Missing routing decisions for domains: {missing}")
 
+    extra_domains = configured_domains - expected_domains
+    if extra_domains:
+        extra = ", ".join(sorted(domain.value for domain in extra_domains))
+        raise ValueError(f"Unexpected routing decisions for unsupported domains: {extra}")
+
+    keyword_domains = {domain for _, domain in KEYWORD_RULES}
+    missing_keyword_domains = expected_domains - keyword_domains
+    if missing_keyword_domains:
+        missing = ", ".join(sorted(domain.value for domain in missing_keyword_domains))
+        raise ValueError(f"Missing keyword rules for domains: {missing}")
+
 
 _validate_routing_configuration()
+
 
 def _tokenize(text: str) -> set[str]:
     return set(_TOKEN_RE.findall(text.lower()))

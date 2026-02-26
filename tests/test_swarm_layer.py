@@ -1,6 +1,7 @@
 import unittest
 
 from src.backend.app.core.routing import (
+    KEYWORD_RULES,
     ROUTING_BY_DOMAIN,
     GENERAL_ROUTING_DECISION,
     KeywordMatcher,
@@ -84,6 +85,11 @@ class SwarmLayerTests(unittest.TestCase):
     def test_all_non_general_domains_have_routing_templates(self):
         expected_domains = {domain for domain in TaskDomain if domain is not TaskDomain.general}
         self.assertEqual(set(ROUTING_BY_DOMAIN.keys()), expected_domains)
+
+    def test_all_non_general_domains_have_keyword_rules(self):
+        keyword_domains = {domain for _, domain in KEYWORD_RULES}
+        expected_domains = {domain for domain in TaskDomain if domain is not TaskDomain.general}
+        self.assertEqual(keyword_domains, expected_domains)
 
     def test_general_route_is_cloned_per_request(self):
         task = TaskContext(title="Unknown", description="No matching keywords")

@@ -58,5 +58,7 @@ When adding a new domain:
 ## Configuration safety checks
 
 - Routing configuration is validated at module load: every non-`general` `TaskDomain` must have a template in `ROUTING_BY_DOMAIN`.
-- This fail-fast guard prevents silent regressions when adding new domains without routing templates.
-- Tests also assert map/domain consistency to keep this invariant locked in CI.
+- Validation is strict: unexpected extra route entries also fail fast.
+- Every non-`general` domain must also have at least one entry in `KEYWORD_RULES`.
+- This fail-fast guard prevents silent regressions when adding or refactoring domains.
+- Tests assert map/domain and keyword/domain consistency to keep these invariants locked in CI.
