@@ -114,6 +114,12 @@ class SwarmLayerTests(unittest.TestCase):
         keyword_domains = [domain for _, domain in KEYWORD_RULES]
         self.assertEqual(len(keyword_domains), len(set(keyword_domains)))
 
+
+    def test_all_routing_decisions_include_security_audit_skill(self):
+        self.assertIn("PROMPT_SECURITY_AUDIT", GENERAL_ROUTING_DECISION.required_skills)
+        for decision in ROUTING_BY_DOMAIN.values():
+            self.assertIn("PROMPT_SECURITY_AUDIT", decision.required_skills)
+
     def test_general_route_is_cloned_per_request(self):
         task = TaskContext(title="Unknown", description="No matching keywords")
         decision = route_task(task)

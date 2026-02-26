@@ -99,7 +99,23 @@ GENERAL_ROUTING_DECISION = RoutingDecision(
 )
 
 
+
+
+def _validate_routing_decision(decision: RoutingDecision, label: str) -> None:
+    if not decision.agent_id:
+        raise ValueError(f"Routing decision '{label}' must define a non-empty agent_id")
+    if not decision.reason:
+        raise ValueError(f"Routing decision '{label}' must define a non-empty reason")
+    if "PROMPT_SECURITY_AUDIT" not in decision.required_skills:
+        raise ValueError(
+            f"Routing decision '{label}' must include PROMPT_SECURITY_AUDIT in required_skills"
+        )
+
 def _validate_routing_configuration() -> None:
+    _validate_routing_decision(GENERAL_ROUTING_DECISION, "general")
+    for domain, decision in ROUTING_BY_DOMAIN.items():
+        _validate_routing_decision(decision, domain.value)
+
     expected_domains = {domain for domain in TaskDomain if domain is not TaskDomain.general}
     configured_domains = set(ROUTING_BY_DOMAIN)
 
