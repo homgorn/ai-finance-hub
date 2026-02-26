@@ -110,6 +110,10 @@ class SwarmLayerTests(unittest.TestCase):
         expected_domains = {domain for domain in TaskDomain if domain is not TaskDomain.general}
         self.assertEqual(keyword_domains, expected_domains)
 
+    def test_keyword_rules_have_single_entry_per_domain(self):
+        keyword_domains = [domain for _, domain in KEYWORD_RULES]
+        self.assertEqual(len(keyword_domains), len(set(keyword_domains)))
+
     def test_general_route_is_cloned_per_request(self):
         task = TaskContext(title="Unknown", description="No matching keywords")
         decision = route_task(task)

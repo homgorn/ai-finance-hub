@@ -113,7 +113,11 @@ def _validate_routing_configuration() -> None:
         extra = ", ".join(sorted(domain.value for domain in extra_domains))
         raise ValueError(f"Unexpected routing decisions for unsupported domains: {extra}")
 
-    keyword_domains = {domain for _, domain in KEYWORD_RULES}
+    keyword_domains_list = [domain for _, domain in KEYWORD_RULES]
+    keyword_domains = set(keyword_domains_list)
+    if len(keyword_domains_list) != len(keyword_domains):
+        raise ValueError("KEYWORD_RULES must define at most one rule entry per domain")
+
     missing_keyword_domains = expected_domains - keyword_domains
     if missing_keyword_domains:
         missing = ", ".join(sorted(domain.value for domain in missing_keyword_domains))
