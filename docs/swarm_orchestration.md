@@ -23,6 +23,7 @@ Current supported domains:
   - exact tokens (`tax`, `irs`, `compliance`),
   - prefix wildcards with `*` suffix (`deduction*`, `налог*`, `санкц*`).
 - Matching is token-safe (no raw substring scanning across the entire sentence), which avoids false positives such as `syntax` => `tax`.
+- If tokenization produces no tokens (empty/punctuation-only input), routing falls back to `general`.
 - Rule precedence is deterministic: the first matching rule in `KEYWORD_RULES` wins.
 - Keyword definitions are normalized to lowercase and duplicate wildcard prefixes are deduplicated at compile time.
 
@@ -61,5 +62,6 @@ When adding a new domain:
 - Validation is strict: unexpected extra route entries also fail fast.
 - Every non-`general` domain must also have at least one entry in `KEYWORD_RULES`.
 - Exact keywords are validated for cross-domain collisions (same exact token cannot belong to multiple domains).
+- Each keyword rule must remain non-empty after normalization (guards against broken/blank config entries).
 - This fail-fast guard prevents silent regressions when adding or refactoring domains.
 - Tests assert map/domain and keyword/domain consistency to keep these invariants locked in CI.

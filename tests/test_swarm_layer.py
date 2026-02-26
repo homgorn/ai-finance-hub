@@ -28,6 +28,15 @@ class SwarmLayerTests(unittest.TestCase):
         decision = route_task(task)
         self.assertEqual(decision.agent_id, "general_finance_agent")
 
+    def test_empty_and_punctuation_only_input_routes_general(self):
+        empty_task = TaskContext(title="", description="")
+        empty_decision = route_task(empty_task)
+        self.assertEqual(empty_decision.agent_id, "general_finance_agent")
+
+        punct_task = TaskContext(title="!!!", description="... ---")
+        punct_decision = route_task(punct_task)
+        self.assertEqual(punct_decision.agent_id, "general_finance_agent")
+
     def test_keyword_matching_uses_tokens_not_substrings(self):
         task = TaskContext(title="Editor syntax help", description="Need better syntax highlighting")
         decision = route_task(task)
