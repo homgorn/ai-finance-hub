@@ -1,6 +1,14 @@
 import unittest
 
-from src.backend.app.core.routing import KeywordMatcher, TaskContext, TaskDomain, infer_domain, route_task
+from src.backend.app.core.routing import (
+    ROUTING_BY_DOMAIN,
+    GENERAL_ROUTING_DECISION,
+    KeywordMatcher,
+    TaskContext,
+    TaskDomain,
+    infer_domain,
+    route_task,
+)
 
 
 class SwarmLayerTests(unittest.TestCase):
@@ -72,6 +80,19 @@ class SwarmLayerTests(unittest.TestCase):
         task = TaskContext(title="Tax and insurance", description="Need policy and IRS guidance")
         decision = route_task(task)
         self.assertEqual(decision.agent_id, "tax_specialist")
+
+    def test_all_non_general_domains_have_routing_templates(self):
+        expected_domains = {domain for domain in TaskDomain if domain is not TaskDomain.general}
+        self.assertEqual(set(ROUTING_BY_DOMAIN.keys()), expected_domains)
+
+    def test_general_route_is_cloned_per_request(self):
+        task = TaskContext(title="Unknown", description="No matching keywords")
+        decision = route_task(task)
+        decision.required_skills.append("MUTATION")
+
+        decision_again = route_task(task)
+        self.assertEqual(decision_again.agent_id, GENERAL_ROUTING_DECISION.agent_id)
+        self.assertNotIn("MUTATION", decision_again.required_skills)
 
 
 if __name__ == "__main__":

@@ -53,3 +53,10 @@ When adding a new domain:
    - negative false-positive case,
    - domain-hint priority path.
 5. Update this document and API docs if outward behavior changes.
+
+
+## Configuration safety checks
+
+- Routing configuration is validated at module load: every non-`general` `TaskDomain` must have a template in `ROUTING_BY_DOMAIN`.
+- This fail-fast guard prevents silent regressions when adding new domains without routing templates.
+- Tests also assert map/domain consistency to keep this invariant locked in CI.
