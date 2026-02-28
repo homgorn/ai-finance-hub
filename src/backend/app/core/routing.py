@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from types import MappingProxyType
 import re
 
 
@@ -25,12 +26,12 @@ class RoutingDecision:
     required_skills: list[str]
 
 
-KEYWORD_RULES: list[tuple[set[str], TaskDomain]] = [
-    ({"tax", "irs", "deduction*", "налог*", "ндфл"}, TaskDomain.tax),
-    ({"insurance", "policy", "policies", "premium*", "страхов*"}, TaskDomain.insurance),
-    ({"portfolio", "rebalance", "allocation"}, TaskDomain.portfolio),
-    ({"kyc", "aml", "compliance", "санкц*"}, TaskDomain.compliance),
-]
+KEYWORD_RULES: tuple[tuple[frozenset[str], TaskDomain], ...] = (
+    (frozenset({"tax", "irs", "deduction*", "налог*", "ндфл"}), TaskDomain.tax),
+    (frozenset({"insurance", "policy", "policies", "premium*", "страхов*"}), TaskDomain.insurance),
+    (frozenset({"portfolio", "rebalance", "allocation"}), TaskDomain.portfolio),
+    (frozenset({"kyc", "aml", "compliance", "санкц*"}), TaskDomain.compliance),
+)
 
 _TOKEN_RE = re.compile(r"\w+")
 
@@ -41,7 +42,7 @@ class KeywordMatcher:
     prefix_tokens: tuple[str, ...]
 
     @classmethod
-    def from_keywords(cls, keywords: set[str]) -> "KeywordMatcher":
+    def from_keywords(cls, keywords: frozenset[str]) -> "KeywordMatcher":
         exact_tokens: set[str] = set()
         prefix_tokens: list[str] = []
 
@@ -69,7 +70,7 @@ class KeywordMatcher:
         return any(token.startswith(self.prefix_tokens) for token in tokens)
 
 
-ROUTING_BY_DOMAIN: dict[TaskDomain, RoutingDecision] = {
+ROUTING_BY_DOMAIN = MappingProxyType({
     TaskDomain.tax: RoutingDecision(
         agent_id="tax_specialist",
         reason="Tax intent identified via domain hint/keywords.",
@@ -90,7 +91,7 @@ ROUTING_BY_DOMAIN: dict[TaskDomain, RoutingDecision] = {
         reason="Portfolio intent identified via domain hint/keywords.",
         required_skills=["PORTFOLIO_REBALANCE", "PROMPT_SECURITY_AUDIT"],
     ),
-}
+})
 
 GENERAL_ROUTING_DECISION = RoutingDecision(
     agent_id="general_finance_agent",

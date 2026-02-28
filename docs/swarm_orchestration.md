@@ -41,7 +41,7 @@ Each route returns:
 - `reason`
 - `required_skills`
 
-Implementation note: routing templates are centralized in a domain->decision map and cloned per request to avoid accidental shared mutable state.
+Implementation note: routing templates are centralized in an immutable domain->decision map and cloned per request to avoid accidental shared mutable state.
 
 ## Extension checklist
 

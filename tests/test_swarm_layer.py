@@ -139,6 +139,14 @@ class SwarmLayerTests(unittest.TestCase):
         required = {skill for decision in decisions for skill in decision.required_skills}
         self.assertTrue(required.issubset(skill_names), required - skill_names)
 
+
+    def test_routing_templates_and_keyword_rules_are_immutable(self):
+        with self.assertRaises(TypeError):
+            ROUTING_BY_DOMAIN[TaskDomain.general] = GENERAL_ROUTING_DECISION
+
+        keyword_set, _ = KEYWORD_RULES[0]
+        self.assertIsInstance(keyword_set, frozenset)
+
     def test_general_route_is_cloned_per_request(self):
         task = TaskContext(title="Unknown", description="No matching keywords")
         decision = route_task(task)
