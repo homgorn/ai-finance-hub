@@ -111,6 +111,10 @@ def _validate_routing_decision(decision: RoutingDecision, label: str) -> None:
         raise ValueError(f"Routing decision '{label}' must define at least one required skill")
     if len(decision.required_skills) != len(set(decision.required_skills)):
         raise ValueError(f"Routing decision '{label}' contains duplicate required skills")
+    if any((not skill) or (skill != skill.strip()) for skill in decision.required_skills):
+        raise ValueError(
+            f"Routing decision '{label}' has invalid required_skills entries (empty or surrounding whitespace)"
+        )
     if "PROMPT_SECURITY_AUDIT" not in decision.required_skills:
         raise ValueError(
             f"Routing decision '{label}' must include PROMPT_SECURITY_AUDIT in required_skills"

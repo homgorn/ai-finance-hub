@@ -122,6 +122,14 @@ class SwarmLayerTests(unittest.TestCase):
             self.assertTrue(decision.required_skills)
             self.assertEqual(len(decision.required_skills), len(set(decision.required_skills)))
 
+
+    def test_required_skills_have_no_empty_or_whitespace_entries(self):
+        decisions = [GENERAL_ROUTING_DECISION, *ROUTING_BY_DOMAIN.values()]
+        for decision in decisions:
+            for skill in decision.required_skills:
+                self.assertTrue(skill)
+                self.assertEqual(skill, skill.strip())
+
     def test_all_routing_decisions_include_security_audit_skill(self):
         self.assertIn("PROMPT_SECURITY_AUDIT", GENERAL_ROUTING_DECISION.required_skills)
         for decision in ROUTING_BY_DOMAIN.values():
