@@ -63,6 +63,7 @@ When adding a new domain:
 - Every non-`general` domain must also have exactly one entry in `KEYWORD_RULES` (no duplicate domain rule blocks).
 - Exact keywords are validated for cross-domain collisions (same exact token cannot belong to multiple domains).
 - Each keyword rule must remain non-empty after normalization (guards against broken/blank config entries).
+- Every routing decision must define a non-empty, duplicate-free `required_skills` list.
 - Every routing decision (including fallback `general`) must include `PROMPT_SECURITY_AUDIT` as a baseline security skill.
 - This fail-fast guard prevents silent regressions when adding or refactoring domains.
 - Tests assert map/domain and keyword/domain consistency to keep these invariants locked in CI.

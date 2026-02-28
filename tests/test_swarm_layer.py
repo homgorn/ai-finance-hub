@@ -115,6 +115,13 @@ class SwarmLayerTests(unittest.TestCase):
         self.assertEqual(len(keyword_domains), len(set(keyword_domains)))
 
 
+
+    def test_required_skills_are_non_empty_and_unique(self):
+        decisions = [GENERAL_ROUTING_DECISION, *ROUTING_BY_DOMAIN.values()]
+        for decision in decisions:
+            self.assertTrue(decision.required_skills)
+            self.assertEqual(len(decision.required_skills), len(set(decision.required_skills)))
+
     def test_all_routing_decisions_include_security_audit_skill(self):
         self.assertIn("PROMPT_SECURITY_AUDIT", GENERAL_ROUTING_DECISION.required_skills)
         for decision in ROUTING_BY_DOMAIN.values():

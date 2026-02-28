@@ -106,10 +106,15 @@ def _validate_routing_decision(decision: RoutingDecision, label: str) -> None:
         raise ValueError(f"Routing decision '{label}' must define a non-empty agent_id")
     if not decision.reason:
         raise ValueError(f"Routing decision '{label}' must define a non-empty reason")
+    if not decision.required_skills:
+        raise ValueError(f"Routing decision '{label}' must define at least one required skill")
+    if len(decision.required_skills) != len(set(decision.required_skills)):
+        raise ValueError(f"Routing decision '{label}' contains duplicate required skills")
     if "PROMPT_SECURITY_AUDIT" not in decision.required_skills:
         raise ValueError(
             f"Routing decision '{label}' must include PROMPT_SECURITY_AUDIT in required_skills"
         )
+
 
 def _validate_routing_configuration() -> None:
     _validate_routing_decision(GENERAL_ROUTING_DECISION, "general")
