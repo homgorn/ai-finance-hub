@@ -66,7 +66,7 @@ class SwarmLayerTests(unittest.TestCase):
         task = TaskContext(title="Portfolio rebalance", description="Need allocation check")
         decision = route_task(task)
         self.assertEqual(decision.agent_id, "portfolio_specialist")
-        self.assertIn("PORTFOLIO_REBALANCING", decision.required_skills)
+        self.assertIn("PORTFOLIO_REBALANCE", decision.required_skills)
 
     def test_domain_hint_routes_portfolio(self):
         task = TaskContext(title="Anything", description="General", domain_hint=TaskDomain.portfolio)
@@ -126,6 +126,18 @@ class SwarmLayerTests(unittest.TestCase):
         self.assertIn("PROMPT_SECURITY_AUDIT", GENERAL_ROUTING_DECISION.required_skills)
         for decision in ROUTING_BY_DOMAIN.values():
             self.assertIn("PROMPT_SECURITY_AUDIT", decision.required_skills)
+
+
+    def test_routing_required_skills_exist_in_skill_catalog(self):
+        from pathlib import Path
+
+        skill_names = {
+            p.parent.name
+            for p in Path("modules/skills").glob("*/*/SKILL.md")
+        }
+        decisions = [GENERAL_ROUTING_DECISION, *ROUTING_BY_DOMAIN.values()]
+        required = {skill for decision in decisions for skill in decision.required_skills}
+        self.assertTrue(required.issubset(skill_names), required - skill_names)
 
     def test_general_route_is_cloned_per_request(self):
         task = TaskContext(title="Unknown", description="No matching keywords")

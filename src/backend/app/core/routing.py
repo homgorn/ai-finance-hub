@@ -88,7 +88,7 @@ ROUTING_BY_DOMAIN: dict[TaskDomain, RoutingDecision] = {
     TaskDomain.portfolio: RoutingDecision(
         agent_id="portfolio_specialist",
         reason="Portfolio intent identified via domain hint/keywords.",
-        required_skills=["PORTFOLIO_REBALANCING", "PROMPT_SECURITY_AUDIT"],
+        required_skills=["PORTFOLIO_REBALANCE", "PROMPT_SECURITY_AUDIT"],
     ),
 }
 
