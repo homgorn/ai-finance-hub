@@ -50,4 +50,3 @@ AI Finance Hub is an orchestration platform, not a single chatbot:
 - `docs/ADMIN_ARCHITECTURE_RU.md` — модель разделения Platform Admin vs Tenant Admin
 - `docs/CMS_OPTIONS_RU.md` — open-source варианты админки/CMS
 - `docs/LOGIC_WEAK_POINTS_RU.md`
-- `docs/DOCUSAURUS_FULL_DOCUMENTATION_RU.md`
