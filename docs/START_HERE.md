@@ -18,6 +18,7 @@
 2. `api_overview.md`
 3. `IMPLEMENTATION_STATUS_RU.md`
 4. `RELIABILITY_REVIEW_RU.md`
+5. `../specs/README.md` — SDD-процесс и принятые контракты
 
 ## 2) Мини-карта системы
 - Backend API: `src/backend`
@@ -32,8 +33,10 @@
 - Event store (inmemory/sqlite)
 - Idempotency adapters (inmemory/redis-ready)
 - Retry-aware processing
+- API integration tests и production frontend build в CI
+- Fail-closed shared-secret защита task/worker API в production
 
 ## 4) Что дальше
-- Broker adapters (RabbitMQ/SQS/Kafka)
-- Integration tests через FastAPI TestClient
-- Admin UI и User UI разделение ролей
+- Identity provider + RBAC/tenant authorization
+- Broker/worker и durable distributed idempotency
+- Админ- и пользовательский UI с разделением ролей

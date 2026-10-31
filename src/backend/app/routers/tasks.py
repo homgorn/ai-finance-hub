@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..core.routing import TaskContext, route_task
-from ..dependencies import get_runtime
+from ..dependencies import get_runtime, require_api_key, require_worker_api_key
 from ..models.task import TaskRequest
 from ..services.runtime import RuntimeService
 
-router = APIRouter(prefix="/tasks", tags=["tasks"])
+router = APIRouter(prefix="/tasks", tags=["tasks"], dependencies=[Depends(require_api_key)])
 
 
 @router.post("/submit")
@@ -21,8 +21,8 @@ def submit(task: TaskRequest, runtime: RuntimeService = Depends(get_runtime)):
     }
 
 
-@router.post("/{task_id}/process")
-def process(task_id: str, runtime: RuntimeService = Depends(get_runtime)):
+@router.post("/process-next", dependencies=[Depends(require_worker_api_key)])
+def process_next(runtime: RuntimeService = Depends(get_runtime)):
     record = runtime.process_next()
     if not record:
         raise HTTPException(status_code=404, detail="queue_empty")

@@ -1,4 +1,5 @@
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 
@@ -21,6 +22,26 @@ class SQLiteQueueTests(unittest.TestCase):
             assert msg is not None
             self.assertEqual(msg.task_id, "t1")
             self.assertEqual(q.lag(), 1)
+
+    def test_only_one_worker_claims_a_message(self):
+        with tempfile.TemporaryDirectory() as td:
+            q = SQLiteTaskQueue(str(Path(td) / "queue.db"))
+            q.publish(TaskMessage(task_id="t1", tenant_id="tenant1", idempotency_key="k1"))
+            start = threading.Barrier(2)
+            results: list[TaskMessage | None] = []
+
+            def consume() -> None:
+                start.wait()
+                results.append(q.consume_nowait())
+
+            workers = [threading.Thread(target=consume) for _ in range(2)]
+            for worker in workers:
+                worker.start()
+            for worker in workers:
+                worker.join()
+
+            self.assertEqual(sum(result is not None for result in results), 1)
+            self.assertEqual(q.lag(), 0)
 
 
 if __name__ == "__main__":

@@ -18,12 +18,12 @@
 - No persistent state (DB/queue) yet.
 - No real provider integrations (Anthropic/OpenAI/financial APIs) yet.
 - No true policy engine with signed approvals.
-- Frontend remains minimal due environment package restrictions.
+- Frontend remains a minimal shell; its production build is covered in CI.
 
 ## Next engineering priorities
 1. Introduce `policy_decision_id` + audit event store.
 2. Add async task queue and retry strategy.
-3. Add integration tests for API endpoints.
+3. Expand API contract tests to cover tenant authorization once an identity provider is chosen.
 4. Build UI for route explainability and policy overrides.
 
 ## Product strategy critique (new)

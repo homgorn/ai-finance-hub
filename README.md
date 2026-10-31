@@ -22,6 +22,31 @@ AI Finance Hub is an orchestration platform, not a single chatbot:
 - `modules/skills` — Claude/OpenAI/community skill modules.
 - `openclaw` — architecture, threat model, hardening docs.
 - `docs` — GitHub Pages-ready documentation.
+- `specs` — SDD specifications, design plans, and delivery checklists.
+
+## Local verification
+
+From the repository root:
+
+```bash
+python -m unittest discover -s tests -v
+python -m compileall src/backend/app
+```
+
+The current implemented runtime contract is in
+[`specs/001-task-submission-runtime`](specs/001-task-submission-runtime/spec.md).
+
+## Deployment safety baseline
+
+Copy `.env.example` to a non-versioned environment file or configure the same
+`AI_FINANCE_HUB_*` variables in the deployment platform. In `production`, the
+application refuses to start unless both `AI_FINANCE_HUB_API_KEY` and
+`AI_FINANCE_HUB_WORKER_API_KEY` are set. Send the former in `X-API-Key` for
+`/tasks/*`; queue processing additionally requires `X-Worker-API-Key`.
+
+This is a bootstrap shared-secret control, not tenant-level authentication or
+authorization. Do not expose the service to untrusted users until an identity
+provider, RBAC, audit retention, and durable distributed runtime are in place.
 
 ## Next steps
 1. Replace keyword routing with scored classifier + agent capability registry.

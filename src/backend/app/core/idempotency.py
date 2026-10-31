@@ -48,4 +48,6 @@ class RedisIdempotencyStore:
 def build_idempotency_store(backend: str, redis_url: str) -> IdempotencyStore:
     if backend == "redis":
         return RedisIdempotencyStore(redis_url=redis_url)
-    return InMemoryIdempotencyStore()
+    if backend == "inmemory":
+        return InMemoryIdempotencyStore()
+    raise ValueError(f"Unsupported idempotency backend: {backend}")

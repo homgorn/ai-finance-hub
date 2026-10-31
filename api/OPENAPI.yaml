@@ -2,6 +2,18 @@ openapi: 3.0.3
 info:
   title: AI Finance Hub API
   version: 0.3.0
+components:
+  securitySchemes:
+    ClientApiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Required for task endpoints when AI_FINANCE_HUB_ENVIRONMENT=production.
+    WorkerApiKey:
+      type: apiKey
+      in: header
+      name: X-Worker-API-Key
+      description: Required in addition to ClientApiKey to process queued tasks in production.
 paths:
   /health:
     get:
@@ -12,24 +24,33 @@ paths:
   /tasks/route:
     post:
       summary: Route task to an agent
+      security:
+        - ClientApiKey: []
       responses:
         '200':
           description: Routing decision
   /tasks/submit:
     post:
       summary: Submit task to orchestrator and queue
+      security:
+        - ClientApiKey: []
       responses:
         '200':
           description: Submission result
-  /tasks/{task_id}/process:
+  /tasks/process-next:
     post:
-      summary: Process next queued task (worker simulation)
+      summary: Process the next queued task (worker simulation)
+      security:
+        - ClientApiKey: []
+          WorkerApiKey: []
       responses:
         '200':
           description: Processed
   /tasks/{task_id}:
     get:
       summary: Get task record
+      security:
+        - ClientApiKey: []
       responses:
         '200':
           description: Task

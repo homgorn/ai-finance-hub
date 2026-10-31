@@ -20,6 +20,14 @@ class QuotaTests(unittest.TestCase):
         self.assertFalse(d.allowed)
         self.assertEqual(d.reason, "budget_cap_exceeded")
 
+    def test_negative_cost_is_rejected_without_mutating_usage(self):
+        mgr = QuotaManager()
+        decision = mgr.check_and_consume("t1", -1.0)
+        self.assertFalse(decision.allowed)
+        self.assertEqual(decision.reason, "invalid_task_cost")
+        self.assertEqual(mgr.get_usage("t1").tasks_used, 0)
+        self.assertEqual(mgr.get_usage("t1").budget_used, 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
