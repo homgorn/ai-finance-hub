@@ -55,8 +55,15 @@ class RuntimeService:
         self.orchestrator = TaskOrchestrator(idempotency_store or InMemoryIdempotencyStore())
         self.max_attempts = max_attempts
         self.tasks: dict[str, TaskRecord] = {}
+        self._tasks_by_idempotency_key: dict[str, str] = {}
 
     def submit_task(self, task: Any) -> SubmitResult:
+        context = TaskContext(title=task.title, description=task.description, domain_hint=task.domain_hint)
+        idempotency_key = self.orchestrator.build_idempotency_key(context, task.tenant_id)
+        existing_task_id = self._tasks_by_idempotency_key.get(idempotency_key)
+        if existing_task_id:
+            return SubmitResult(True, "duplicate", self.tasks[existing_task_id])
+
         quota = self.quotas.check_and_consume(task.tenant_id, task.estimated_cost)
         task_id = str(uuid4())
 
@@ -72,7 +79,7 @@ class RuntimeService:
             return SubmitResult(False, quota.reason, rec)
 
         orchestration = self.orchestrator.orchestrate(
-            TaskContext(title=task.title, description=task.description, domain_hint=task.domain_hint),
+            context,
             tenant_id=task.tenant_id,
             risk_level=RiskLevel.high if task.contains_pii else RiskLevel.medium,
             contains_pii=task.contains_pii,
@@ -85,6 +92,7 @@ class RuntimeService:
             agent=orchestration.routing.agent_id,
         )
         self.tasks[task_id] = rec
+        self._tasks_by_idempotency_key[orchestration.idempotency_key] = task_id
         self.events.append(task_id, task.tenant_id, "task_submitted", {"agent": rec.agent})
 
         self._transition(task_id, TaskStatus.routed)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -56,8 +57,17 @@ class SQLiteEventStore:
     def _conn(self) -> sqlite3.Connection:
         return sqlite3.connect(self.db_path)
 
+    @contextmanager
+    def _connection(self):
+        """Yield a connection and always release its OS file handle."""
+        conn = self._conn()
+        try:
+            yield conn
+        finally:
+            conn.close()
+
     def _ensure_schema(self) -> None:
-        with self._conn() as conn:
+        with self._connection() as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS events (
@@ -73,7 +83,7 @@ class SQLiteEventStore:
             conn.commit()
 
     def append(self, task_id: str, tenant_id: str, event_type: str, data: dict[str, Any]) -> None:
-        with self._conn() as conn:
+        with self._connection() as conn:
             conn.execute(
                 "INSERT INTO events(task_id, tenant_id, type, data_json, created_at) VALUES (?, ?, ?, ?, ?)",
                 (
@@ -87,7 +97,7 @@ class SQLiteEventStore:
             conn.commit()
 
     def list_by_task(self, task_id: str) -> list[Event]:
-        with self._conn() as conn:
+        with self._connection() as conn:
             rows = conn.execute(
                 "SELECT task_id, tenant_id, type, data_json, created_at FROM events WHERE task_id = ? ORDER BY id",
                 (task_id,),
@@ -98,6 +108,6 @@ class SQLiteEventStore:
         ]
 
     def count(self) -> int:
-        with self._conn() as conn:
+        with self._connection() as conn:
             row = conn.execute("SELECT COUNT(*) FROM events").fetchone()
         return int(row[0]) if row else 0

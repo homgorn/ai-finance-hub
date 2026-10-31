@@ -22,6 +22,19 @@ AI Finance Hub is an orchestration platform, not a single chatbot:
 - `modules/skills` — Claude/OpenAI/community skill modules.
 - `openclaw` — architecture, threat model, hardening docs.
 - `docs` — GitHub Pages-ready documentation.
+- `specs` — SDD specifications, design plans, and delivery checklists.
+
+## Local verification
+
+From the repository root:
+
+```bash
+python -m unittest discover -s tests -v
+python -m compileall src/backend/app
+```
+
+The current implemented runtime contract is in
+[`specs/001-task-submission-runtime`](specs/001-task-submission-runtime/spec.md).
 
 ## Next steps
 1. Replace keyword routing with scored classifier + agent capability registry.

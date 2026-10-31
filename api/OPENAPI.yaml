@@ -21,9 +21,9 @@ paths:
       responses:
         '200':
           description: Submission result
-  /tasks/{task_id}/process:
+  /tasks/process-next:
     post:
-      summary: Process next queued task (worker simulation)
+      summary: Process the next queued task (worker simulation)
       responses:
         '200':
           description: Processed

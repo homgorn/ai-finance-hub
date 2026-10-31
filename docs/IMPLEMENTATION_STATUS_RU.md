@@ -40,3 +40,10 @@
 - Added persistent SQLite queue adapter and queue factory (`inmemory|sqlite`).
 - Wired queue backend selection via `Settings` + `dependencies.py`.
 - Added queue adapter/factory tests.
+
+## Batch 4 (completed)
+- Added SDD structure in `specs/` (specification, technical plan, delivery checklist).
+- Fixed SQLite connection cleanup so Windows test runs do not retain database file locks.
+- Made in-process task submission idempotent: retries return the original task without a second quota charge.
+- Replaced the misleading task-id processing route with `POST /tasks/process-next`.
+- Added FastAPI integration tests and made the full unit test suite mandatory in CI.

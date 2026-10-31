@@ -21,8 +21,8 @@ def submit(task: TaskRequest, runtime: RuntimeService = Depends(get_runtime)):
     }
 
 
-@router.post("/{task_id}/process")
-def process(task_id: str, runtime: RuntimeService = Depends(get_runtime)):
+@router.post("/process-next")
+def process_next(runtime: RuntimeService = Depends(get_runtime)):
     record = runtime.process_next()
     if not record:
         raise HTTPException(status_code=404, detail="queue_empty")

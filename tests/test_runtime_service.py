@@ -73,6 +73,30 @@ class RuntimeServiceTests(unittest.TestCase):
         self.assertFalse(result.accepted)
         self.assertEqual(result.record.status, TaskStatus.rejected)
 
+    def test_duplicate_submission_returns_original_task_without_new_quota_charge(self):
+        runtime = RuntimeService()
+        runtime.quotas.set_quota(
+            "t1",
+            runtime.quotas.default_quota.__class__(max_tasks_per_window=1, max_budget_per_window=10.0),
+        )
+        req = SimpleNamespace(
+            title="Tax filing",
+            description="Need help with IRS",
+            tenant_id="t1",
+            estimated_cost=1.0,
+            domain_hint=None,
+            contains_pii=False,
+        )
+
+        first = runtime.submit_task(req)
+        second = runtime.submit_task(req)
+
+        self.assertTrue(first.accepted)
+        self.assertTrue(second.accepted)
+        self.assertEqual(second.reason, "duplicate")
+        self.assertEqual(second.record.task_id, first.record.task_id)
+        self.assertEqual(runtime.quotas.get_usage("t1").tasks_used, 1)
+
 
 if __name__ == "__main__":
     unittest.main()

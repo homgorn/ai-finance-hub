@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sqlite3
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from queue import Empty, Queue
@@ -48,8 +49,17 @@ class SQLiteTaskQueue:
     def _conn(self) -> sqlite3.Connection:
         return sqlite3.connect(self.db_path)
 
+    @contextmanager
+    def _connection(self):
+        """Yield a connection and always release its OS file handle."""
+        conn = self._conn()
+        try:
+            yield conn
+        finally:
+            conn.close()
+
     def _ensure_schema(self) -> None:
-        with self._conn() as conn:
+        with self._connection() as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS task_queue (
@@ -64,7 +74,7 @@ class SQLiteTaskQueue:
             conn.commit()
 
     def publish(self, msg: TaskMessage) -> None:
-        with self._conn() as conn:
+        with self._connection() as conn:
             conn.execute(
                 "INSERT INTO task_queue(task_id, tenant_id, idempotency_key, consumed) VALUES (?, ?, ?, 0)",
                 (msg.task_id, msg.tenant_id, msg.idempotency_key),
@@ -72,7 +82,7 @@ class SQLiteTaskQueue:
             conn.commit()
 
     def consume_nowait(self) -> TaskMessage | None:
-        with self._conn() as conn:
+        with self._connection() as conn:
             row = conn.execute(
                 "SELECT id, task_id, tenant_id, idempotency_key FROM task_queue WHERE consumed = 0 ORDER BY id LIMIT 1"
             ).fetchone()
@@ -83,7 +93,7 @@ class SQLiteTaskQueue:
             return TaskMessage(task_id=row[1], tenant_id=row[2], idempotency_key=row[3])
 
     def lag(self) -> int:
-        with self._conn() as conn:
+        with self._connection() as conn:
             row = conn.execute("SELECT COUNT(*) FROM task_queue WHERE consumed = 0").fetchone()
         return int(row[0]) if row else 0
 
