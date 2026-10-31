@@ -24,10 +24,10 @@
    - `QuotaManager` with early reject path.
 
 ## Что дальше (следующий шаг)
-- Подменить in-memory queue на RabbitMQ/SQS/Kafka adapter.
-- Подменить in-memory idempotency на Redis в runtime wiring.
-- Добавить persistent event store (PostgreSQL) + retention.
-- Добавить integration tests (FastAPI TestClient) и нагрузочные тесты (k6/Locust).
+- Ввести identity provider, RBAC и tenant authorization вместо shared-secret bootstrap слоя.
+- Подменить локальную очередь на broker с visibility timeout/DLQ.
+- Добавить durable task registry/event store (PostgreSQL) + retention.
+- Добавить нагрузочные тесты (k6/Locust) и контрактные тесты для публичных клиентов.
 
 
 ## Batch 2 (completed)
@@ -47,3 +47,9 @@
 - Made in-process task submission idempotent: retries return the original task without a second quota charge.
 - Replaced the misleading task-id processing route with `POST /tasks/process-next`.
 - Added FastAPI integration tests and made the full unit test suite mandatory in CI.
+
+## Batch 5 (completed)
+- Added strict backend configuration validation: unimplemented adapters no longer silently fall back to in-memory storage.
+- Made SQLite queue claiming atomic for local concurrent workers and reject negative task cost at the domain boundary.
+- Added environment-driven production configuration, separate client/worker API keys, and fail-closed startup checks.
+- Added `.env.example`, OpenAPI security-scheme documentation, auth/configuration tests, and frontend build verification.
