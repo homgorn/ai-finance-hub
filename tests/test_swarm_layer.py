@@ -47,8 +47,8 @@ class SwarmLayerTests(unittest.TestCase):
         decision = route_task(task)
         self.assertEqual(decision.agent_id, "compliance_guard")
 
-    def test_suffix_word_forms_match_tax_keywords(self):
-        task = TaskContext(title="Filing", description="Need help with deductions and налоги")
+    def test_plural_and_derived_english_tax_terms_route_to_tax_specialist(self):
+        task = TaskContext(title="Taxes", description="Need taxation guidance")
         decision = route_task(task)
         self.assertEqual(decision.agent_id, "tax_specialist")
 

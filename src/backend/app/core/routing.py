@@ -27,7 +27,7 @@ class RoutingDecision:
 
 
 KEYWORD_RULES: tuple[tuple[frozenset[str], TaskDomain], ...] = (
-    (frozenset({"tax", "irs", "deduction*", "налог*", "ндфл"}), TaskDomain.tax),
+    (frozenset({"tax*", "irs", "deduction*", "налог*", "ндфл"}), TaskDomain.tax),
     (frozenset({"insurance", "policy", "policies", "premium*", "страхов*"}), TaskDomain.insurance),
     (frozenset({"portfolio", "rebalance", "allocation"}), TaskDomain.portfolio),
     (frozenset({"kyc", "aml", "compliance", "санкц*"}), TaskDomain.compliance),
