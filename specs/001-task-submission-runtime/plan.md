@@ -9,6 +9,10 @@
   queue abstraction only supports consuming the next available message.
 - SQLite adapters wrap every connection in a closing context manager. This is
   required for deterministic cleanup on Windows.
+- Only implemented adapter names are accepted. A typo must fail at startup
+  rather than silently use volatile in-memory storage.
+- Production settings are read from `AI_FINANCE_HUB_*` environment variables;
+  a client secret and a separate worker secret are mandatory.
 
 ## Consequences
 
@@ -17,6 +21,8 @@
   record before claiming the same guarantee.
 - The legacy misleading `/{task_id}/process` operation is intentionally absent;
   clients must call the explicit process-next endpoint.
+- Shared API keys are a deployment guard, not an identity or authorization
+  system; production data handling remains out of scope until that exists.
 
 ## Test layers
 

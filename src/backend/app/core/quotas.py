@@ -33,6 +33,9 @@ class QuotaManager:
         self._quotas[tenant_id] = quota
 
     def check_and_consume(self, tenant_id: str, task_cost: float) -> QuotaDecision:
+        if task_cost < 0:
+            return QuotaDecision(False, "invalid_task_cost")
+
         usage = self._usage.setdefault(tenant_id, TenantUsage())
         quota = self._quotas.get(tenant_id, self.default_quota)
 

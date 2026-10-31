@@ -12,6 +12,10 @@ class QueueFactoryTests(unittest.TestCase):
         q = build_task_queue("sqlite", ".runtime/queue.db")
         self.assertIsInstance(q, SQLiteTaskQueue)
 
+    def test_rejects_unknown_backend(self):
+        with self.assertRaisesRegex(ValueError, "Unsupported queue backend"):
+            build_task_queue("kafka", ".runtime/queue.db")
+
 
 if __name__ == "__main__":
     unittest.main()

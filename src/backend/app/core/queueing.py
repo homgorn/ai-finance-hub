@@ -83,12 +83,20 @@ class SQLiteTaskQueue:
 
     def consume_nowait(self) -> TaskMessage | None:
         with self._connection() as conn:
+            # Serialize the claim so two local workers cannot consume one row.
+            conn.execute("BEGIN IMMEDIATE")
             row = conn.execute(
                 "SELECT id, task_id, tenant_id, idempotency_key FROM task_queue WHERE consumed = 0 ORDER BY id LIMIT 1"
             ).fetchone()
             if not row:
+                conn.rollback()
                 return None
-            conn.execute("UPDATE task_queue SET consumed = 1 WHERE id = ?", (row[0],))
+            updated = conn.execute(
+                "UPDATE task_queue SET consumed = 1 WHERE id = ? AND consumed = 0", (row[0],)
+            )
+            if updated.rowcount != 1:
+                conn.rollback()
+                return None
             conn.commit()
             return TaskMessage(task_id=row[1], tenant_id=row[2], idempotency_key=row[3])
 
@@ -101,4 +109,6 @@ class SQLiteTaskQueue:
 def build_task_queue(backend: str, sqlite_path: str) -> TaskQueue:
     if backend == "sqlite":
         return SQLiteTaskQueue(sqlite_path)
-    return InMemoryTaskQueue()
+    if backend == "inmemory":
+        return InMemoryTaskQueue()
+    raise ValueError(f"Unsupported queue backend: {backend}")

@@ -7,6 +7,9 @@
 - [x] Add API integration tests for duplicate submission and queue processing.
 - [x] Run the full test suite locally.
 - [x] Execute the full test suite in GitHub Actions.
+- [x] Reject unimplemented backend configuration instead of silently using memory.
+- [x] Add atomic local SQLite message claiming and negative-cost defence.
+- [x] Add fail-closed production shared-secret checks for task and worker APIs.
 
 ## Follow-up (not implemented)
 

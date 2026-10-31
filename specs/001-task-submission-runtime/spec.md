@@ -30,12 +30,15 @@ Windows, where an open database handle prevents cleanup and test isolation.
    operation.
 5. Keyword routing preserves tax variants such as `taxes` and `taxation` while
    avoiding arbitrary substring matches.
+6. Production startup fails without separate client and worker secrets; task and
+   worker routes reject invalid credentials.
 
 ## Non-goals
 
 - Distributed idempotency across separate service instances.
 - A production broker, worker pool, authentication, or durable task registry.
 - Financial advice or execution of external financial actions.
+- Full identity management, RBAC, and multi-tenant authorization.
 
 ## Verification
 
